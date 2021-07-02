@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Food web reconstruction through phylogenetic transfer of low-rank network representation</title>
+    <script src="https://hypothes.is/embed.js" async></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+    integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap');
+
+        :root {
+            --citation: #1976D2;
+            --structure: hsl(210, 61%, 43%);
+            
+            --light: #474747;
+            --pale: #a5a5a5;
+            --grey: #e0e0e0;
+            --nav: #fdfdfd;
+
+            --width: 820px;
+            --inner-space: 1.2em;
+        }
+
+        body {
+            font-family: "Roboto", sans-serif;
+            margin: 0 0;
+            padding: 0 0;
+        }
+
+        article > p {
+            line-height: 135%;
+        }
+        article > h1 {
+            padding-top: 3em;
+        }
+        a {
+            text-decoration: none;
+            color: #000;
+            border-bottom: 1px solid var(--structure);
+        }
+        a:hover {
+            font-weight: 500;
+        }
+        .citation {
+            color: var(--citation);
+        }
+        .container {
+            margin: 0em auto;
+            max-width: var(--width);
+            padding: var(--inner-space);
+        }
+        header > .container {
+            margin-top: 4em;
+        }
+        code, pre {
+            font-family: "Roboto Mono", monospace;
+        }
+        pre {
+            white-space: pre-wrap;
+        }
+        h1, h2, h3 {
+            color: var(--structure);
+            font-family: "Roboto Condensed", sans-serif;
+            font-weight: 400;
+        }
+        header {
+            font-family: "Roboto Condensed", sans-serif;
+            z-index: 5;
+            color: black;
+            margin-top: 4rem;
+        }
+        .header--title {
+            font-weight: 400;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .header--authors > span {
+            color: var(--light);
+            font-weight: 400;
+        }
+        main {
+            padding-top: 8em !important;
+            padding-bottom: 8em !important;
+        }
+        footer {
+            background-color: var(--grey);
+            font-weight: 300;
+        }
+        .abstract {
+            color: var(--light);
+            margin-bottom: 5em;
+        }
+        figure {
+            max-width: 100%;
+            border: 1px solid var(--pale);
+            border-radius: 2px;
+            margin: 1em 0.5em;
+        }
+        figure > img {
+            max-width: 100%;
+            display: block;
+            margin: 0em auto;
+        }
+        figure > figcaption {
+            padding: var(--inner-space);
+        }
+        table {
+            width: 100%;
+            min-width: 100%;
+            border-collapse: collapse;
+        }
+        table > caption {
+            padding: var(--inner-space);
+        }
+        figcaption, caption {
+            color: var(--light);
+            font-weight: 300;
+        }
+        thead {
+            color: var(--structure);
+        }
+        td, th {
+            padding: 3px;
+        }
+        tr {
+            border-top: 1px solid var(--structure);
+            border-bottom: 1px solid var(--structure);
+        }
+        tbody > tr:nth-child(even) {background: var(--grey)};
+        tbody {
+            border-bottom: 1px solid var(--structure);
+        }
+        #refs {
+            font-size: 90%;
+            column-count: 2;
+        }
+        #refs > .csl-entry {
+            padding-bottom: 0.2em;
+            padding-top: 0.2em;
+        }
+        .hanging-indent > .csl-entry {
+            padding-left: 15px ;
+            text-indent: -15px ;
+        }    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css"
+    integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous" />
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js"
+    integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O"
+    crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js"
+    integrity="sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF"
+    crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false }
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="header--title">Food web reconstruction through phylogenetic transfer of low-rank network representation</div>
+            <div class="header--authors">
+                                <span class="header--author">
+                                        <a href="https://orcid.org/0000-0001-6067-1349" target="_blank">
+                        Tanya Strydom
+                    </a>
+                                                                <sup class="affilcode">1</sup>
+                                            <sup class="affilcode">2</sup>
+                                            <sup class="affilcode">‡</sup>
+                                    </span>
+                                <span class="header--author">
+                                        <a href="https://orcid.org/0000-0003-0193-5441" target="_blank">
+                        Salomé Bouskila
+                    </a>
+                                                                <sup class="affilcode">1</sup>
+                                            <sup class="affilcode">2</sup>
+                                            <sup class="affilcode">‡</sup>
+                                    </span>
+                                <span class="header--author">
+                                        <a href="https://orcid.org/0000-0002-0735-5184" target="_blank">
+                        Timothée Poisot
+                    </a>
+                                                                <sup class="affilcode">1</sup>
+                                            <sup class="affilcode">2</sup>
+                                    </span>
+                            </div>
+        </div>
+    </header>
+    
+    <main class="container">
+        <section class="abstract">
+            <b>Abstract:</b> TODO<br />
+            <div class="artifacts">
+                <a href="draft.pdf" title="Draft PDF" target="_blank">draft</a>
+                <a href="preprint.pdf" title="Preprint PDF" target="_blank">preprint</a>
+            </div>
+        </section>
+        
+        <article>
+            <h1 id="introduction">Introduction</h1>
+            <p>There are two core challenges to our understanding of ecological networks in space, particularly at macro-ecologically relevant scales <span class="citation" data-cites="Trojelsgaard2016EcoNet">(<em>e.g.</em> Trøjelsgaard and Olesen 2016)</span>. First, networks within a location are difficult to sample properly <span class="citation" data-cites="Jordano2016ChaEcoa Jordano2016SamNeta">(Jordano 2016a, 2016b)</span>, and this results in a widespread “Eltonian shortfall” <span class="citation" data-cites="Hortal2015SevSho">(Hortal et al. 2015)</span>. This first challenge (local incompleteness) has been in large part addressed by the recent multiplication of methods aiming to predict interactions within an existing network, a lot of which are reviewed in <span class="citation" data-cites="Strydom2021RoaPre">Strydom et al. (2021)</span>. Second, recent analyses based on collected data <span class="citation" data-cites="Poisot2021GloKno">(Poisot, Bergeron, et al. 2021)</span> or metadata <span class="citation" data-cites="Cameron2019UneGlo">(Cameron et al. 2019)</span> highlight that ecological networks are currently studied in a biased subset of space and bioclimates, which impedes our ability to generalize any local understanding of network structure. Having a general solution for the issue of metaweb inference <span class="citation" data-cites="Morales-Castilla2015InfBioa">(Morales-Castilla et al. 2015)</span> even in situations where minimal knowledge about existing interactions within the species pool is known would catalyze significant breakthroughs in our ability to start thinking about species interactions networks over large spatial scales.</p>
+            <p>Here, we present a general method for the transfer learning of network representations, relying on similarities of species in a biologically relevant proxy space. This method allows to the prediction of species interactions based on knowledge extracted from another species pool. Our method is outlined in fig. 1; we provide an illustration based on learning an embedding of a metaweb of trophic interactions for European mammals <span class="citation" data-cites="Maiorano2020TetEu Maiorano2020DatTet">(Maiorano et al. 2020b, 2020a)</span>, and based on phylogenetic relationships between mammals globally <span class="citation" data-cites="Upham2019InfMam">(Upham, Esselstyn, and Jetz 2019)</span>, transfer this representation to the pool of mammals in Canada.</p>
+            <figure>
+            <img src="figures/figure-concept.png" id="fig:concept" alt="Figure 1: Overview of the phylogenetic transfer learning of species interactions networks. Starting from an initial network, we learn its representation through a graph embedding step (here, a truncated Singular Values Decomposition), yielding a series of latent traits; second, for the destination species pool, we perform ancestral character estimation using a phylogeny (here, using a Brownian model for the latent traits); we then sample from the reconstructed distribution of latent traits to generate a probabilistic metaweb at the destination (here, assuming a uniform distribution of traits), and threshold it to yield the final list of interactions." /><figcaption aria-hidden="true">Figure 1: Overview of the phylogenetic transfer learning of species interactions networks. Starting from an initial network, we learn its representation through a graph embedding step (here, a truncated Singular Values Decomposition), yielding a series of latent traits; second, for the destination species pool, we perform ancestral character estimation using a phylogeny (here, using a Brownian model for the latent traits); we then sample from the reconstructed distribution of latent traits to generate a probabilistic metaweb at the destination (here, assuming a uniform distribution of traits), and threshold it to yield the final list of interactions.</figcaption>
+            </figure>
+            <p>There are a plurality of measures of species similarities that can be used for knowledge transfer <span class="citation" data-cites="Morales-Castilla2015InfBioa">(see <em>e.g.</em> Morales-Castilla et al. 2015)</span>; nevertheless, phylogenetic proximity has a number of desirable properties when working at large scales. <span class="citation" data-cites="Gerhold2015PhyPat">Gerhold et al. (2015)</span> make the point that phylogenetic signal captures diversification of characters (large macro-evolutionary process), but not necessarily community assembly (fine ecological process); <span class="citation" data-cites="Dormann2010EvoCli">Dormann et al. (2010)</span> previously gave very similar conclusions. Interactions tend to conserve phylogenetic signal that encompasses a wide range of ecological and evolutionary mechanisms <span class="citation" data-cites="Mouquet2012EcoAdv Cavender-Bares2009MerCom">(Mouquet et al. 2012; Cavender-Bares et al. 2009)</span>, and most importantly, retain this signal even when it is not detectable at the community scale <span class="citation" data-cites="Poisot2018IntRet Hutchinson2017CopSig">(Poisot and Stouffer 2018; Hutchinson, Cagua, and Stouffer 2017)</span>. Finally, species interactions at macro-ecological scales seem to respond mostly to macro-evolutionary processes <span class="citation" data-cites="Price2003MacThe">(Price 2003)</span>; this is evidenced by the presence of conserved backbones in food webs <span class="citation" data-cites="DallaRiva2016ExpEvo">(Dalla Riva and Stouffer 2016)</span>, strong evolutionary signature on prey choice <span class="citation" data-cites="Stouffer2012EvoCona">(Stouffer et al. 2012)</span>, and strong phylogenetic signature in food web intervality <span class="citation" data-cites="Eklof2016PhyCom">(Eklöf and Stouffer 2016)</span>. Taken together, these consideration suggest that phylogenies can be reliably be used to transfer knowledge on species interactions.</p>
+            <p><strong>TK</strong> Results/summary type paragraph</p>
+            <h1 id="data-used-for-the-case-study">Data used for the case study</h1>
+            <p>We use data on the European metaweb assembled by <span class="citation" data-cites="Maiorano2020TetEu">Maiorano et al. (2020b)</span>. We use the definition of the metaweb first introduced by <span class="citation" data-cites="Dunne2006NetStr">Dunne (2006)</span>, <em>i.e.</em> an inventory of all possible interactions within species from a spatially delimited pool. The metaweb is not a prediction of the food web at any specific locale within the frontiers of the species pool – in fact, these local food webs are expected to have a subset of both the species and the interactions of their metaweb <span class="citation" data-cites="Poisot2012DisSpea">(Poisot et al. 2012)</span>. This being said, as the metaweb represents the total of functional, phylogenetic, and macroecological processes <span class="citation" data-cites="Morales-Castilla2015InfBioa">(Morales-Castilla et al. 2015)</span>, it is still worthy of ecological attention. We induced the subgraph corresponding to all mammals by matching species names in the original network first to the GBIF taxonomic backbone <span class="citation" data-cites="GBIFSecretariat2021GbiBac">(GBIF Secretariat 2021)</span>, and retaining all those who matched to mammals; all nodes had valid matches to GBIF at this step, and so this backbone is used for all name reconciliation steps as outlined below.</p>
+            <p>The European metaweb represents the knowledge we want to learn and transfer; the support for transfer is here represented by the phylogenetic similarity of mammals. We used the mammalian consensus supertree by <span class="citation" data-cites="Upham2019InfMam">Upham, Esselstyn, and Jetz (2019)</span>, for which all approx. 6000 names have been similarly matched to their GBIF valid names. This step allows us to place each node of the mammalian European metaweb in the phylogeny.</p>
+            <p>The destination problem to which we want to transfer knowledge is the trophic interactions between mammals in Canada. We obtained the list of extant species from the IUCN checklist, and selected the terrestrial and semi-aquatic species (this corresponds to the same selection that was applied by <span class="citation" data-cites="Maiorano2020TetEu">Maiorano et al. (2020b)</span> in the European metaweb). The IUCN names were, as previously, reconciled against GBIF to have an exact match to the taxonomy.</p>
+            <p>The European metaweb had XXX species, and the Canadian species pool had YYY - of these, only 17 were shared, which highlights the need to rely on a knowledge transfer approach. In the following sections, we describe the representational learning step applied to European data, the transfer step through phylogenetic similarity, and the generation of a probabilistic metaweb for the destination species pool.</p>
+            <h1 id="method-description">Method description</h1>
+            <p>The crux of the method is the transfer of knowledge of a known network, in order to predict interactions between species from another location. In fig. 1, we give a high-level overview of the approach; in the example around which this manuscript is built (leveraging detailed knowledge about trophic interactions between Mammalia in Europe to predict the less known trophic interactions between closely phylogenetically related Mammalia in Canada), we use a series of specific steps for network embedding, trait inference, and network prediction and thresholding. This being said, the methods at each step may be substituted by others when the data support it.</p>
+            <p>Specifically, our approach can be summarized as follows: from the known network in Europe, we use a truncated Singular Values Decomposition (t-SVD) to generate latent traits representing a low-dimensional embedding of the network; these traits give an unbiased estimate of the node’s position in the latent feature spaces. Then, we map these latent traits onto a reference phylogeny (other distance-based measures of species proximity that allow for the inference of features in the latent space can be used, such as for example dissimilarity in functional traits). Based on the reconstructed latent traits for species in the destination species pool, a Random Dot Product Graph (RDPG) model predicts the interaction between species through a function of the nodes’ features. Thus, from latent traits and nodes position, we can infer interactions.</p>
+            <h2 id="learning-the-origin-network-representation">Learning the origin network representation</h2>
+            <p>The first step in transfer learning is to learn the structure of the origin dataset. In order to do so, we rely on an approach inspired from representational learning, where we learn a <em>representation</em> of the metaweb, rather than a list of interactions. This approach is conceptually different from other metaweb-scale predictions (<em>.e.g.</em> ALBOUY, others?), in that the metaweb representation is easily transferable. Specifically, we use Random Dot Product Graphs <span class="citation" data-cites="Young2007RanDot">(RDPG; Young and Scheinerman 2007)</span> to create a number of latent variables that can be combined into an approximation of the network adjacency matrix. RDPG results are known to have strong phylogenetic signal, and to capture the evolutionary backbone of food webs <span class="citation" data-cites="DallaRiva2016ExpEvo">(Dalla Riva and Stouffer 2016)</span>. In addition, recent advances show that the latent variables produced this way can be used to predict <em>de novo</em> network edges <span class="citation" data-cites="Runghen2021ExpNod">(Runghen, Stouffer, and Dalla Riva 2021)</span>.</p>
+            <p>The latent variables are created by performing a truncated Singular Value Decomposition (tSVD) on the adjacency matrix. SVD is an appropriate embedding of ecological networks, which has recently been shown to both capture their complex, emerging properties <span class="citation" data-cites="Strydom2021SvdEnt">(Strydom, Dalla Riva, and Poisot 2021)</span>, and to allow highly accurate prediction of the interactions within a single network <span class="citation" data-cites="Poisot2021ImpMam">(Poisot, Ouellet, et al. 2021)</span>. Under tSVD, an adjacency matrix <span class="math inline"><strong>A</strong></span> is decomposed into three components, so that <span class="math inline"><strong>A</strong> = <strong>L</strong><strong>Σ</strong><strong>R</strong><sup>*</sup></span>, for which <span class="math inline"><strong>Σ</strong></span> is an <span class="math inline"><em>r</em> × <em>r</em></span> diagonal matrix (where <span class="math inline"><em>r</em></span> is the rank of matrix <span class="math inline"><strong>A</strong></span>) containing only non-zero singular (<span class="math inline"><em>σ</em></span>) values, <span class="math inline"><strong>L</strong></span> is an <span class="math inline"><em>m</em> × <em>r</em></span> matrix, and <span class="math inline"><strong>R</strong></span> an <span class="math inline"><em>n</em> × <em>r</em></span> matrix. In using a tSVD we retain only ‘informative’ (non-zero) <span class="math inline"><em>σ</em></span> values - which translates to unique predation strategies within the matrix.</p>
+            <p>The latent variables used for the RDPG, called the left and right subspaces, are defined as <span class="math inline">$\mathcal{L} = \mathbf{L}\sqrt{\mathbf{\Sigma}}$</span>, and <span class="math inline">$\mathcal{R} = \sqrt{\mathbf{\Sigma}}\mathbf{R}$</span> – using the full rank of <span class="math inline"><strong>A</strong></span>, <span class="math inline">ℒℛ′ = <strong>A</strong></span>, and using any smaller rank results in <span class="math inline">ℒℛ′ ≈ <strong>A</strong></span>. Using a rank of 1 for the tSVD provides a first-order approximation of the network, etc.</p>
+            <p>The specific rank at which the SVD ought to be truncated is a difficult question. The purpose of SVD is to remove the noise, expressed at high dimensions, and to focus on the signal, expressed at low dimension. In datasets with a clear signal/noise demarcation, the scree plot of <span class="math inline"><strong>Σ</strong></span> can show a sharp drop at the rank where noise starts. Alternatively, REF showed that the profile likelihood (assuming a known distribution of <span class="math inline"><strong>Σ</strong></span>, or a normal distribution otherwise) peaks at the rank maximizing the signal-to-noise ration. Because the European metaweb is almost entirely known, the amount of noise is low; this is reflected in fig. 2 (left), where the scree plot shows no important drop, and in fig. 2 (right) where the proportion of variance explained increases smoothly at higher dimensions. For this reason, we default back to an arbitrary threshold that explain 60% of the variance in the underlying data, corresponding to 12 dimensions.</p>
+            <figure>
+            <img src="figures/figure-screeplot.png" id="fig:scree" alt="Figure 2: Left: representation of the screeplot of the eigenvalues from the tSVD on the European metaweb. The screeplot shows no obvious drop in the eigenvalues that may be leveraged to automatically detect a minimal dimension for embedding, after e.g. Zhu and Ghodsi (2006). Right: cumulative fraction of variance explained by each dimensions up to the rank of the European metaweb. The grey lines represents cutoff at 40, 60, and 80% of variance explained. For the rest of the analysis, we reverted to an arbitrary threshold of 60% of variance explained, which represented a good tradeoff between accuracy and reduced number of features." /><figcaption aria-hidden="true">Figure 2: Left: representation of the screeplot of the eigenvalues from the tSVD on the European metaweb. The screeplot shows no obvious drop in the eigenvalues that may be leveraged to automatically detect a minimal dimension for embedding, after <em>e.g.</em> <span class="citation" data-cites="Zhu2006AutDim">Zhu and Ghodsi (2006)</span>. Right: cumulative fraction of variance explained by each dimensions up to the rank of the European metaweb. The grey lines represents cutoff at 40, 60, and 80% of variance explained. For the rest of the analysis, we reverted to an arbitrary threshold of 60% of variance explained, which represented a good tradeoff between accuracy and reduced number of features.</figcaption>
+            </figure>
+            <p>Because RDPG relies on matrix multiplication, the higher dimensions essentially serve to make specific interactions converge towards 0 or 1; therefore, for reasonably low ranks, there is no guarantee that the values in the reconstructed network will be within the unit range. In order to determine what constitutes an appropriate threshold, we performed the RDPG approach on the European metaweb, and evaluated the threshold by treating this as a binary classification problem, specifically assuming that both 0 and 1 in the European metaweb are all true. Given the methodological given in REF, this seems like a reasonable assumption, although one that does not hold for all metawebs. We used the thresholding approach presented in HAYSTACK, and picked a cutoff that maximized Youden’s J statistic <span class="citation" data-cites="Youden1950IndRat">(Youden 1950)</span>; the resulting cutoff was 0.22, and gave an accuracy above 0.99.</p>
+            <p>The left and right subspaces for the European metaweb, accompanied by the threshold, represent the knowledge we seek to transfer. In the next section, we explain how we rely on phylogenetic similarity to do so.</p>
+            <h2 id="transfer-learning-through-phylogenetic-relatedness">Transfer learning through phylogenetic relatedness</h2>
+            <p>In order to transfer the knowledge from the European metaweb to the Canadian species pool, we performed ancestral character estimation using a Brownian motion model, which is a conservative approach in the absence of strong hypotheses about the nature of phylogenetic signal in the network decomposition <span class="citation" data-cites="Litsios2012EffPhy">(Litsios and Salamin 2012)</span>. We assumed that all traits (<em>i.e.</em> the feature vectors for the left and right subspaces) where independent, which is a reasonable assumption as every trait/dimension added to the tSVD has an <em>additive</em> effect to the one before it. The Brownian motion algorithm returns the <em>average</em> value of the trait, and its upper and lower bounds. Because we do not estimate other parameters of the traits distributions, we considered that every species trait is represented as a uniform distribution between these bounds. Therefore, the inferred left and right sub-spaces for the Canadian species pool (<span class="math inline">$\hat{\mathcal{L}}$</span> and <span class="math inline">$\hat{\mathcal{R}}$</span>) have entries that are distributions, representing the range of values for a given species at a given dimension.</p>
+            <p>These objects represent the transferred knowledge, which we can use for prediction of the Canadian metaweb.</p>
+            <h2 id="probabilistic-prediction-of-the-destination-network">Probabilistic prediction of the destination network</h2>
+            <p>The phylogenetic reconstruction of <span class="math inline">$\hat{\mathcal{L}}$</span> and <span class="math inline">$\hat{\mathcal{R}}$</span> has an associated uncertainty, represented by the breadth of the uniform distribution associated to each of their entries. Therefore, we can use this information to assemble a <em>probabilistic</em> metaweb in the sense of <span class="citation" data-cites="Poisot2016StrPro">Poisot et al. (2016)</span>, <em>i.e.</em> in which every interaction is represented as a single, independent, Bernoulli event of probability <span class="math inline"><em>p</em></span>.</p>
+            <figure>
+            <img src="figures/figure-subspaces.png" id="fig:subspaces" alt="Figure 3: Visual representation of the left (green/purple) and right (green/brown) subspaces, alongside the adjacency matrix of the food web they encode (greyscale). The European metaweb is on the left, and the imputed Canadian metaweb (before data inflation) on the right. This figures illustrates how much structure the left sub-space captures. As we show in fig. 6, the species with a value of 0 in the left subspace are species without any preys." /><figcaption aria-hidden="true">Figure 3: Visual representation of the left (green/purple) and right (green/brown) subspaces, alongside the adjacency matrix of the food web they encode (greyscale). The European metaweb is on the left, and the imputed Canadian metaweb (before data inflation) on the right. This figures illustrates how much structure the left sub-space captures. As we show in fig. 6, the species with a value of 0 in the left subspace are species without any preys.</figcaption>
+            </figure>
+            <p>Specifically, we have adopted the following approach. For every entry in <span class="math inline">$\hat{\mathcal{L}}$</span> and <span class="math inline">$\hat{\mathcal{R}}$</span>, we draw a value from its distribution. This results in one instance of the possible left (<span class="math inline">$\hat{\mathcal{l}}$</span>) and right (<span class="math inline">$\hat{\mathcal{r}}$</span>) subspaces for the Canadian metaweb. These can be multiplied, to produced one matrix of real values. Because the entries in <span class="math inline">$\hat{\mathcal{l}}$</span> and <span class="math inline">$\hat{\mathcal{r}}$</span> are in the same space where <span class="math inline">ℒ</span> and <span class="math inline">ℛ</span> were originally predicted, it follows that the threshold <span class="math inline"><em>ρ</em></span> estimated for the European metaweb also applies. We use this information to produce one random Canadian metaweb, <span class="math inline">$N = \hat{\mathcal{L}}$</span><span class="math inline">$\hat{\mathcal{R}}' \ge \rho$</span> fig. 3.</p>
+            <p>Because the intervals around some trait values can be broad <span class="citation" data-cites="Garland1999IntPhy">(in fact, probably broader than what they would actually be, see <em>e.g.</em> Garland, Midford, and Ives 1999)</span>, we repeat the above process <span class="math inline">2 × 10<sup>5</sup></span> times, which results in a probabilistic metaweb <span class="math inline"><em>P</em></span>, where the probability of an interaction (here conveying our degree of trust that it exists given the inferred trait distributions) is given by the number of times where it appears across all random draws <span class="math inline"><em>N</em></span>, divided by the number of samples. An interaction with <span class="math inline"><em>P</em><sub><em>i</em>, <em>j</em></sub> = 1</span> means that these two species were predicted to interact in all <span class="math inline">2 × 10<sup>5</sup></span> random draws, etc..</p>
+            <h2 id="data-cleanup-discovery-validation-and-thresholding">Data cleanup, discovery, validation, and thresholding</h2>
+            <p>Once the probabilistic metaweb for Canada has been produced, we followed a number of data inflation steps to finalize it.</p>
+            <figure>
+            <img src="figures/figure-validation.png" id="fig:inflation" alt="Figure 4: GLOBI comparison REF TK/TP" /><figcaption aria-hidden="true">Figure 4: GLOBI comparison REF TK/TP</figcaption>
+            </figure>
+            <p>First, we extracted the subgraph corresponding to the 17 species shared between the European and Canadian pools, and replaced these interactions with a probability of 0 (non-interaction) or 1 (interaction). This represents a minute modification of the infered network (about 0.8% of all species pairs from the Canadian web), but ensures that are directly re-using knowledge from Europe.</p>
+            <p>Second, we looked for all species in the Canadian pool known to the Global Biotic Interactions (GLOBI) database <strong>REF</strong>, and extracted their known interactions. Because GLOBI aggregates observed interactions, it is not a <em>networks</em> data source, and therefore the only information we can reliably extract from it is that a species pair <em>was reported to interact at least once</em>. This last statement should yet be taken with caution, as some sources in GLOBI (<em>e.g.</em> <strong>TK</strong>) are produced though text-mining, and therefore do not document direct evidence of the interaction. Nevertheless, should the predictive model work, we would expect that a majority of interactions known to GLOBI would also be predicted. After performing this check, we set the probability of all interactions known to GLOBI (366 in total, 33 of which were not predicted by the model, for a success rate of 91%) to 1.</p>
+            <p>Finally, we downloaded the data from <span class="citation" data-cites="Strong2014ImpNona">Strong and Leroux (2014)</span>, who mined various literature sources to identify trophic interactions in Newfoundland. This dataset had documented 25 interactions between mammals, only two of which were not part of our predictions, for a success rate of 92%. These two interactions were added to our predicted metaweb, with a probability of 1.</p>
+            <figure>
+            <img src="figures/figure-cutoffs.png" id="fig:thresholds" alt="Figure 5: Left: effect of varying the cutoff for probabilities to be considered non-zero on the number of number of unique links and on \hat{L}, the probabilistic estimate of the number of links assuming that all interactions are independant. Right: effect of varying the cutoff on the number of disconnected species, and on network connectance. In both panels, the grey line indicates the cutoff \rho = TK that resulted in the first species losing all of its interactions." /><figcaption aria-hidden="true">Figure 5: Left: effect of varying the cutoff for probabilities to be considered non-zero on the number of number of unique links and on <span class="math inline"><em>L̂</em></span>, the probabilistic estimate of the number of links assuming that all interactions are independant. Right: effect of varying the cutoff on the number of disconnected species, and on network connectance. In both panels, the grey line indicates the cutoff <span class="math inline"><em>ρ</em> = <em>T</em><em>K</em></span> that resulted in the first species losing all of its interactions.</figcaption>
+            </figure>
+            <p>Because the confidence interval on the infered trait space are probably an over-estimate, we decided to apply a thresholding step to the interactions after the data inflation fig. 5. <span class="citation" data-cites="Cirtwill2021BuiFoo">Cirtwill and Hambäck (2021)</span> highlight a number of strategies to threshold probabilistic networks. Their methods assume the underlying data to be tag-based sequencing, which represents interactions as co-occurrences of predator and prey within the same tags; this is conceptually identical to our Bernoulli-trial based reconstruction of a probabilistic network. We performed a full analysis of the effect of various cutoffs, and as they either resulted in removing to few interactions, or removing enough interactions that species started to be disconnected from the network, we set the threshold for a probability equivalent to 0 to the largest possible value that still allow all species to have at least one interaction with non-zero probability.</p>
+            <h2 id="implementation-and-code-availability">Implementation and code availability</h2>
+            <p>The entire pipeline was implemented in <em>Julia</em> 1.6 <span class="citation" data-cites="Bezanson2017JulFre">(Bezanson et al. 2017)</span>, and is available under the permissive MIT License at DOI. The taxonomic cleanup steps are done using <code>GBIF.jl</code> <span class="citation" data-cites="Dansereau2021SimJl">(Dansereau and Poisot 2021)</span>. The network embedding and analysis is done using <code>EcologicalNetworks.jl</code> <span class="citation" data-cites="Banville2021ManJl Poisot2019EcoJl">(Banville, Vissault, and Poisot 2021; Poisot et al. 2019)</span>. The phylogenetic simulations are done using <code>PhyloNetworks.jl</code> <span class="citation" data-cites="Solis-Lemus2017PhyPac">(Solís-Lemus, Bastide, and Ané 2017)</span> and <code>Phylo.jl</code> <span class="citation" data-cites="Reeve2016HowPar">(Reeve et al. 2016)</span>. A complete <code>Project.toml</code> file specifying the full tree of dependencies is available alongside the code, at <a href="https://osf.io/2zwqm/"><code>https://osf.io/2zwqm/</code></a>.</p>
+            <h1 id="results-and-discussion-of-the-case-study">Results and discussion of the case study</h1>
+            <p><strong>TP</strong> fig. 5 – the cutoffs using maximum curvature of central difference approximation of the second order partial derivative result in respectively species being lost, or almost all links being kept – we settled on the value that allowed all species to remained.</p>
+            <figure>
+            <img src="figures/figure-degree.png" id="fig:degree" alt="Figure 6: Left: there is a linear relatiosnhip between the values on the first dimension of the left subspace and the generality, i.e. the relative number of preys, sensu Schoener (1989). Species with a value of 0 in this subspace are at the bottom-most trophic level. Right: there is, similarly, a linear relationship between the position of a species on the first dimension of the right subspace and its vulnerability, i.e. the relative number of predators. Taken together, these two figures show that the first-order representation of this network would capture its degree distribution." /><figcaption aria-hidden="true">Figure 6: Left: there is a linear relatiosnhip between the values on the first dimension of the left subspace and the generality, <em>i.e.</em> the relative number of preys, <em>sensu</em> <span class="citation" data-cites="Schoener1989FooWeb">Schoener (1989)</span>. Species with a value of 0 in this subspace are at the bottom-most trophic level. Right: there is, similarly, a linear relationship between the position of a species on the first dimension of the right subspace and its vulnerability, <em>i.e.</em> the relative number of predators. Taken together, these two figures show that the first-order representation of this network would capture its degree distribution.</figcaption>
+            </figure>
+            <p>The t-SVD embedding is able to learn relevant ecological features for the network. fig. 6 shows that the first rank correlates linearly with generality and vulnerability <span class="citation" data-cites="Schoener1989FooWeb">(Schoener 1989)</span>, <em>i.e.</em> the number of preys and predators. Importantly, this implies that a rank 1 approximation represents the configuration model <span class="citation" data-cites="Park2004StaMec">(Park and Newman 2004)</span> for the metaweb, or (accounting for the probabilistic nature of the degree) the soft configuration model <span class="citation" data-cites="vanderHoorn2018SpaMax">(van der Hoorn, Lippner, and Krioukov 2018)</span>, both of which are maximum entropy graph models <span class="citation" data-cites="Garlaschelli2018CovStr">(Garlaschelli, Hollander, and Roccaverde 2018)</span>, with respectively sharp and soft local constraints. The configuration model is widely used by ecologists in the context of null hypothesis significance testing of network structure <span class="citation" data-cites="Bascompte2003NesAss">(<em>e.g.</em> Bascompte et al. 2003)</span>, and it is noteworthy that for this metaweb, the relevant information was extracted at the first rank. Because the first rank corresponds to the leading eigenvalue of the system, the results of fig. 6 have a straightforward interpretation: degree-based processes are the most important in structuring the mammalian food web.</p>
+            <h1 id="conclusions">Conclusions</h1>
+            <p>A cautionary tale regarding validation. Interaction can never be a true negative. Cannot use a empirical subset of a bigger (predicated) network for validation -&gt; because e.g. dietary shifts across range.</p>
+            <p><span class="citation" data-cites="Cirtwill2019QuaFra">Cirtwill et al. (2019)</span> – we need an informative interaction-level prior on probability: this method might be it</p>
+            <h1 class="unnumbered" id="references">References</h1>
+            <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+            <div id="ref-Banville2021ManJl" class="csl-entry" role="doc-biblioentry">
+            Banville, Francis, Steve Vissault, and Timothée Poisot. 2021. <span>“Mangal.jl and EcologicalNetworks.jl: Two Complementary Packages for Analyzing Ecological Networks in Julia.”</span> <em>Journal of Open Source Software</em> 6 (61): 2721. <a href="https://doi.org/10.21105/joss.02721">https://doi.org/10.21105/joss.02721</a>.
+            </div>
+            <div id="ref-Bascompte2003NesAss" class="csl-entry" role="doc-biblioentry">
+            Bascompte, J., P. Jordano, C. J. Melian, and J. M. Olesen. 2003. <span>“The Nested Assembly of Plant-Animal Mutualistic Networks.”</span> <em>Proceedings of the National Academy of Sciences</em> 100 (16): 9383–87. <a href="https://doi.org/10.1073/pnas.1633576100">https://doi.org/10.1073/pnas.1633576100</a>.
+            </div>
+            <div id="ref-Bezanson2017JulFre" class="csl-entry" role="doc-biblioentry">
+            Bezanson, J., A. Edelman, S. Karpinski, and V. Shah. 2017. <span>“Julia: A Fresh Approach to Numerical Computing.”</span> <em>SIAM Review</em> 59 (1): 65–98. <a href="https://doi.org/10.1137/141000671">https://doi.org/10.1137/141000671</a>.
+            </div>
+            <div id="ref-Cameron2019UneGlo" class="csl-entry" role="doc-biblioentry">
+            Cameron, Erin K., Maja K. Sundqvist, Sally A. Keith, Paul J. CaraDonna, Erik A. Mousing, Karin A. Nilsson, Daniel B. Metcalfe, and Aimée T. Classen. 2019. <span>“Uneven Global Distribution of Food Web Studies Under Climate Change.”</span> <em>Ecosphere</em> 10 (3): e02645. <a href="https://doi.org/10.1002/ecs2.2645">https://doi.org/10.1002/ecs2.2645</a>.
+            </div>
+            <div id="ref-Cavender-Bares2009MerCom" class="csl-entry" role="doc-biblioentry">
+            Cavender-Bares, Jeannine, Kenneth H. Kozak, Paul V. A. Fine, and Steven W. Kembel. 2009. <span>“The Merging of Community Ecology and Phylogenetic Biology.”</span> <em>Ecology Letters</em> 12 (7): 693–715. <a href="https://doi.org/10.1111/j.1461-0248.2009.01314.x">https://doi.org/10.1111/j.1461-0248.2009.01314.x</a>.
+            </div>
+            <div id="ref-Cirtwill2019QuaFra" class="csl-entry" role="doc-biblioentry">
+            Cirtwill, Alyssa R., Anna Eklf, Tomas Roslin, Kate Wootton, and Dominique Gravel. 2019. <span>“A Quantitative Framework for Investigating the Reliability of Empirical Network Construction.”</span> <em>Methods in Ecology and Evolution</em> 0 (ja). <a href="https://doi.org/10.1111/2041-210X.13180">https://doi.org/10.1111/2041-210X.13180</a>.
+            </div>
+            <div id="ref-Cirtwill2021BuiFoo" class="csl-entry" role="doc-biblioentry">
+            Cirtwill, Alyssa R., and Peter Hambäck. 2021. <span>“Building Food Networks from Molecular Data: Bayesian or Fixed-Number Thresholds for Including Links.”</span> <em>Basic and Applied Ecology</em> 50 (February): 67–76. <a href="https://doi.org/10.1016/j.baae.2020.11.007">https://doi.org/10.1016/j.baae.2020.11.007</a>.
+            </div>
+            <div id="ref-DallaRiva2016ExpEvo" class="csl-entry" role="doc-biblioentry">
+            Dalla Riva, Giulio V, and Daniel B. Stouffer. 2016. <span>“Exploring the Evolutionary Signature of Food Webs’ Backbones Using Functional Traits.”</span> <em>Oikos</em> 125 (4): 446–56. <a href="https://doi.org/10.1111/oik.02305">https://doi.org/10.1111/oik.02305</a>.
+            </div>
+            <div id="ref-Dansereau2021SimJl" class="csl-entry" role="doc-biblioentry">
+            Dansereau, Gabriel, and Timothée Poisot. 2021. <span>“SimpleSDMLayers.jl and GBIF.jl: A Framework for Species Distribution Modeling in Julia.”</span> <em>Journal of Open Source Software</em> 6 (57): 2872. <a href="https://doi.org/10.21105/joss.02872">https://doi.org/10.21105/joss.02872</a>.
+            </div>
+            <div id="ref-Dormann2010EvoCli" class="csl-entry" role="doc-biblioentry">
+            Dormann, Carsten F., Bernd Gruber, Marten Winter, and Dirk Herrmann. 2010. <span>“Evolution of Climate Niches in European Mammals?”</span> <em>Biology Letters</em> 6 (2): 229–32. <a href="https://doi.org/10.1098/rsbl.2009.0688">https://doi.org/10.1098/rsbl.2009.0688</a>.
+            </div>
+            <div id="ref-Dunne2006NetStr" class="csl-entry" role="doc-biblioentry">
+            Dunne, Jennifer A. 2006. <span>“The Network Structure of Food Webs.”</span> In <em>Ecological Networks: Linking Structure and Dynamics</em>, edited by Jennifer A Dunne and Mercedes Pascual, 27–86. Oxford University Press.
+            </div>
+            <div id="ref-Eklof2016PhyCom" class="csl-entry" role="doc-biblioentry">
+            Eklöf, Anna, and Daniel B. Stouffer. 2016. <span>“The Phylogenetic Component of Food Web Structure and Intervality.”</span> <em>Theoretical Ecology</em> 9 (1): 107–15. <a href="https://doi.org/10.1007/s12080-015-0273-9">https://doi.org/10.1007/s12080-015-0273-9</a>.
+            </div>
+            <div id="ref-Garland1999IntPhy" class="csl-entry" role="doc-biblioentry">
+            Garland, THEODORE, JR., PETER E. Midford, and ANTHONY R. Ives. 1999. <span>“An Introduction to Phylogenetically Based Statistical Methods, with a New Method for Confidence Intervals on Ancestral Values1.”</span> <em>American Zoologist</em> 39 (2): 374–88. <a href="https://doi.org/10.1093/icb/39.2.374">https://doi.org/10.1093/icb/39.2.374</a>.
+            </div>
+            <div id="ref-Garlaschelli2018CovStr" class="csl-entry" role="doc-biblioentry">
+            Garlaschelli, Diego, Frank den Hollander, and Andrea Roccaverde. 2018. <span>“Covariance Structure Behind Breaking of Ensemble Equivalence in Random Graphs.”</span> <em>Journal of Statistical Physics</em> 173 (3-4): 644–62. <a href="https://doi.org/10.1007/s10955-018-2114-x">https://doi.org/10.1007/s10955-018-2114-x</a>.
+            </div>
+            <div id="ref-GBIFSecretariat2021GbiBac" class="csl-entry" role="doc-biblioentry">
+            GBIF Secretariat. 2021. <span>“GBIF Backbone Taxonomy.”</span> <a href="https://doi.org/10.15468/39omei">https://doi.org/10.15468/39omei</a>.
+            </div>
+            <div id="ref-Gerhold2015PhyPat" class="csl-entry" role="doc-biblioentry">
+            Gerhold, Pille, James F. Cahill, Marten Winter, Igor V. Bartish, and Andreas Prinzing. 2015. <span>“Phylogenetic Patterns Are Not Proxies of Community Assembly Mechanisms (they Are Far Better).”</span> <em>Functional Ecology</em> 29 (5): 600–614. <a href="https://doi.org/10.1111/1365-2435.12425">https://doi.org/10.1111/1365-2435.12425</a>.
+            </div>
+            <div id="ref-vanderHoorn2018SpaMax" class="csl-entry" role="doc-biblioentry">
+            Hoorn, Pim van der, Gabor Lippner, and Dmitri Krioukov. 2018. <span>“Sparse Maximum-Entropy Random Graphs with a Given Power-Law Degree Distribution.”</span> <em>Journal of Statistical Physics</em> 173 (3-4): 806–44. <a href="https://doi.org/10.1007/s10955-017-1887-7">https://doi.org/10.1007/s10955-017-1887-7</a>.
+            </div>
+            <div id="ref-Hortal2015SevSho" class="csl-entry" role="doc-biblioentry">
+            Hortal, Joaquín, Francesco de Bello, José Alexandre F. Diniz-Filho, Thomas M. Lewinsohn, Jorge M. Lobo, and Richard J. Ladle. 2015. <span>“Seven Shortfalls That Beset Large-Scale Knowledge of Biodiversity.”</span> <em>Annual Review of Ecology, Evolution, and Systematics</em> 46 (1): 523–49. <a href="https://doi.org/10.1146/annurev-ecolsys-112414-054400">https://doi.org/10.1146/annurev-ecolsys-112414-054400</a>.
+            </div>
+            <div id="ref-Hutchinson2017CopSig" class="csl-entry" role="doc-biblioentry">
+            Hutchinson, Matthew C., Edgar Fernando Cagua, and Daniel B. Stouffer. 2017. <span>“Cophylogenetic Signal Is Detectable in Pollination Interactions Across Ecological Scales.”</span> <em>Ecology</em>, n/a–. <a href="https://doi.org/10.1002/ecy.1955">https://doi.org/10.1002/ecy.1955</a>.
+            </div>
+            <div id="ref-Jordano2016ChaEcoa" class="csl-entry" role="doc-biblioentry">
+            Jordano, Pedro. 2016a. <span>“Chasing Ecological Interactions.”</span> <em>PLOS Biology</em> 14 (9): e1002559. <a href="https://doi.org/10.1371/journal.pbio.1002559">https://doi.org/10.1371/journal.pbio.1002559</a>.
+            </div>
+            <div id="ref-Jordano2016SamNeta" class="csl-entry" role="doc-biblioentry">
+            ———. 2016b. <span>“Sampling Networks of Ecological Interactions.”</span> <em>Functional Ecology</em>, September. <a href="https://doi.org/10.1111/1365-2435.12763">https://doi.org/10.1111/1365-2435.12763</a>.
+            </div>
+            <div id="ref-Litsios2012EffPhy" class="csl-entry" role="doc-biblioentry">
+            Litsios, Glenn, and Nicolas Salamin. 2012. <span>“Effects of Phylogenetic Signal on Ancestral State Reconstruction.”</span> <em>Systematic Biology</em> 61 (3): 533–38. <a href="https://doi.org/10.1093/sysbio/syr124">https://doi.org/10.1093/sysbio/syr124</a>.
+            </div>
+            <div id="ref-Maiorano2020DatTet" class="csl-entry" role="doc-biblioentry">
+            Maiorano, Luigi, Alessandro Montemaggiori, Gentile Francesco Ficetola, Louise O’Connor, and Wilfried Thuiller. 2020a. <span>“Data from: Tetra-EU 1.0: A Species-Level Trophic Meta-Web of European Tetrapods.”</span> Dryad. <a href="https://doi.org/10.5061/DRYAD.JM63XSJ7B">https://doi.org/10.5061/DRYAD.JM63XSJ7B</a>.
+            </div>
+            <div id="ref-Maiorano2020TetEu" class="csl-entry" role="doc-biblioentry">
+            ———. 2020b. <span>“TETRA-EU 1.0: A Species-Level Trophic Metaweb of European Tetrapods.”</span> Edited by Allen Hurlbert. <em>Global Ecology and Biogeography</em> 29 (9): 1452–57. <a href="https://doi.org/10.1111/geb.13138">https://doi.org/10.1111/geb.13138</a>.
+            </div>
+            <div id="ref-Morales-Castilla2015InfBioa" class="csl-entry" role="doc-biblioentry">
+            Morales-Castilla, Ignacio, Miguel G. Matias, Dominique Gravel, and Miguel B. Araújo. 2015. <span>“Inferring Biotic Interactions from Proxies.”</span> <em>Trends in Ecology &amp; Evolution</em> 30 (6): 347–56. <a href="https://doi.org/10.1016/j.tree.2015.03.014">https://doi.org/10.1016/j.tree.2015.03.014</a>.
+            </div>
+            <div id="ref-Mouquet2012EcoAdv" class="csl-entry" role="doc-biblioentry">
+            Mouquet, Nicolas, Vincent Devictor, Christine N. Meynard, Francois Munoz, Louis-Félix Bersier, Jérôme Chave, Pierre Couteron, et al. 2012. <span>“Ecophylogenetics: Advances and Perspectives.”</span> <em>Biological Reviews</em> 87 (4): 769–85. <a href="https://doi.org/10.1111/j.1469-185X.2012.00224.x">https://doi.org/10.1111/j.1469-185X.2012.00224.x</a>.
+            </div>
+            <div id="ref-Park2004StaMec" class="csl-entry" role="doc-biblioentry">
+            Park, Juyong, and M. E. J. Newman. 2004. <span>“Statistical Mechanics of Networks.”</span> <em>Physical Review E</em> 70 (6): 066117. <a href="https://doi.org/10.1103/PhysRevE.70.066117">https://doi.org/10.1103/PhysRevE.70.066117</a>.
+            </div>
+            <div id="ref-Poisot2019EcoJl" class="csl-entry" role="doc-biblioentry">
+            Poisot, Timothée, Zacharie Belisle, Laura Hoebeke, Michiel Stock, and Piotr Szefer. 2019. <span>“EcologicalNetworks.jl - Analysing Ecological Networks.”</span> <em>Ecography</em>. <a href="https://doi.org/10.1111/ecog.04310">https://doi.org/10.1111/ecog.04310</a>.
+            </div>
+            <div id="ref-Poisot2021GloKno" class="csl-entry" role="doc-biblioentry">
+            Poisot, Timothée, Gabriel Bergeron, Kevin Cazelles, Tad Dallas, Dominique Gravel, Andrew MacDonald, Benjamin Mercier, Clément Violet, and Steve Vissault. 2021. <span>“Global Knowledge Gaps in Species Interaction Networks Data.”</span> <em>Journal of Biogeography</em> n/a (n/a). <a href="https://doi.org/10.1111/jbi.14127">https://doi.org/10.1111/jbi.14127</a>.
+            </div>
+            <div id="ref-Poisot2012DisSpea" class="csl-entry" role="doc-biblioentry">
+            Poisot, Timothée, Elsa Canard, David Mouillot, Nicolas Mouquet, and Dominique Gravel. 2012. <span>“The Dissimilarity of Species Interaction Networks.”</span> <em>Ecology Letters</em> 15 (12): 1353–61. <a href="https://doi.org/10.1111/ele.12002">https://doi.org/10.1111/ele.12002</a>.
+            </div>
+            <div id="ref-Poisot2016StrPro" class="csl-entry" role="doc-biblioentry">
+            Poisot, Timothée, Alyssa R. Cirtwill, Kévin Cazelles, Dominique Gravel, Marie-Josée Fortin, and Daniel B. Stouffer. 2016. <span>“The Structure of Probabilistic Networks.”</span> Edited by Jana Vamosi. <em>Methods in Ecology and Evolution</em> 7 (3): 303–12. <a href="https://doi.org/10.1111/2041-210X.12468">https://doi.org/10.1111/2041-210X.12468</a>.
+            </div>
+            <div id="ref-Poisot2021ImpMam" class="csl-entry" role="doc-biblioentry">
+            Poisot, Timothée, Marie-Andrée Ouellet, Nardus Mollentze, Maxwell J. Farrell, Daniel J. Becker, Gregory F. Albery, Rory J. Gibb, Stephanie N. Seifert, and Colin J. Carlson. 2021. <span>“Imputing the Mammalian Virome with Linear Filtering and Singular Value Decomposition.”</span> <em>arXiv:2105.14973 [q-Bio]</em>, May. <a href="http://arxiv.org/abs/2105.14973">http://arxiv.org/abs/2105.14973</a>.
+            </div>
+            <div id="ref-Poisot2018IntRet" class="csl-entry" role="doc-biblioentry">
+            Poisot, Timothée, and Daniel B. Stouffer. 2018. <span>“Interactions Retain the Co-Phylogenetic Matching That Communities Lost.”</span> <em>Oikos</em> 127 (2): 230–38. <a href="https://doi.org/10.1111/oik.03788">https://doi.org/10.1111/oik.03788</a>.
+            </div>
+            <div id="ref-Price2003MacThe" class="csl-entry" role="doc-biblioentry">
+            Price, Peter W. 2003. <em>Macroevolutionary Theory on Macroecological Patterns</em>. Cambridge University Press.
+            </div>
+            <div id="ref-Reeve2016HowPar" class="csl-entry" role="doc-biblioentry">
+            Reeve, Richard, Tom Leinster, Christina A. Cobbold, Jill Thompson, Neil Brummitt, Sonia N. Mitchell, and Louise Matthews. 2016. <span>“How to Partition Diversity.”</span> <em>arXiv:1404.6520 [q-Bio]</em>, December. <a href="http://arxiv.org/abs/1404.6520">http://arxiv.org/abs/1404.6520</a>.
+            </div>
+            <div id="ref-Runghen2021ExpNod" class="csl-entry" role="doc-biblioentry">
+            Runghen, Rogini, Daniel B Stouffer, and Giulio V Dalla Riva. 2021. <span>“Exploiting Node Metadata to Predict Interactions in Large Networks Using Graph Embedding and Neural Networks,”</span> June. <a href="https://doi.org/10.1101/2021.06.10.447991">https://doi.org/10.1101/2021.06.10.447991</a>.
+            </div>
+            <div id="ref-Schoener1989FooWeb" class="csl-entry" role="doc-biblioentry">
+            Schoener, Thomas W. 1989. <span>“Food Webs from the Small to the Large.”</span> <em>Ecology</em> 70 (6): 1559–89.
+            </div>
+            <div id="ref-Solis-Lemus2017PhyPac" class="csl-entry" role="doc-biblioentry">
+            Solís-Lemus, Claudia, Paul Bastide, and Cécile Ané. 2017. <span>“PhyloNetworks: A Package for Phylogenetic Networks.”</span> <em>Molecular Biology and Evolution</em> 34 (12): 3292–98. <a href="https://doi.org/10.1093/molbev/msx235">https://doi.org/10.1093/molbev/msx235</a>.
+            </div>
+            <div id="ref-Stouffer2012EvoCona" class="csl-entry" role="doc-biblioentry">
+            Stouffer, D. B., M. Sales-Pardo, M. I. Sirer, and J. Bascompte. 2012. <span>“Evolutionary Conservation of Species’ Roles in Food Webs.”</span> <em>Science</em> 335 (6075): 1489–92. <a href="https://doi.org/10.1126/science.1216556">https://doi.org/10.1126/science.1216556</a>.
+            </div>
+            <div id="ref-Strong2014ImpNona" class="csl-entry" role="doc-biblioentry">
+            Strong, Justin S., and Shawn J. Leroux. 2014. <span>“Impact of Non-Native Terrestrial Mammals on the Structure of the Terrestrial Mammal Food Web of Newfoundland, Canada.”</span> <em>PLOS ONE</em> 9 (8): e106264. <a href="https://doi.org/10.1371/journal.pone.0106264">https://doi.org/10.1371/journal.pone.0106264</a>.
+            </div>
+            <div id="ref-Strydom2021RoaPre" class="csl-entry" role="doc-biblioentry">
+            Strydom, Tanya, Michael David Catchen, Francis Banville, Dominique Caron, Gabriel Dansereau, Philippe Desjardins-Proulx, Norma Forero, et al. 2021. <span>“A Roadmap Toward Predicting Species Interaction Networks (Across Space and Time).”</span> Preprint. EcoEvoRxiv. <a href="https://doi.org/10.32942/osf.io/eu7k3">https://doi.org/10.32942/osf.io/eu7k3</a>.
+            </div>
+            <div id="ref-Strydom2021SvdEnt" class="csl-entry" role="doc-biblioentry">
+            Strydom, Tanya, Giulio V. Dalla Riva, and Timothée Poisot. 2021. <span>“SVD Entropy Reveals the High Complexity of Ecological Networks.”</span> <em>Frontiers in Ecology and Evolution</em> 9. <a href="https://doi.org/10.3389/fevo.2021.623141">https://doi.org/10.3389/fevo.2021.623141</a>.
+            </div>
+            <div id="ref-Trojelsgaard2016EcoNet" class="csl-entry" role="doc-biblioentry">
+            Trøjelsgaard, Kristian, and Jens M. Olesen. 2016. <span>“Ecological Networks in Motion: Micro- and Macroscopic Variability Across Scales.”</span> <em>Functional Ecology</em> 30 (12): 1926–35. <a href="https://doi.org/10.1111/1365-2435.12710">https://doi.org/10.1111/1365-2435.12710</a>.
+            </div>
+            <div id="ref-Upham2019InfMam" class="csl-entry" role="doc-biblioentry">
+            Upham, Nathan S., Jacob A. Esselstyn, and Walter Jetz. 2019. <span>“Inferring the Mammal Tree: Species-Level Sets of Phylogenies for Questions in Ecology, Evolution, and Conservation.”</span> <em>PLOS Biology</em> 17 (12): e3000494. <a href="https://doi.org/10.1371/journal.pbio.3000494">https://doi.org/10.1371/journal.pbio.3000494</a>.
+            </div>
+            <div id="ref-Youden1950IndRat" class="csl-entry" role="doc-biblioentry">
+            Youden, W. J. 1950. <span>“Index for Rating Diagnostic Tests.”</span> <em>Cancer</em> 3 (1): 32–35. <a href="https://doi.org/10.1002/1097-0142(1950)3:1&lt;32::AID-CNCR2820030106&gt;3.0.CO;2-3">https://doi.org/10.1002/1097-0142(1950)3:1&lt;32::AID-CNCR2820030106&gt;3.0.CO;2-3</a>.
+            </div>
+            <div id="ref-Young2007RanDot" class="csl-entry" role="doc-biblioentry">
+            Young, Stephen J., and Edward R. Scheinerman. 2007. <span>“Random Dot Product Graph Models for Social Networks.”</span> In <em>Algorithms and Models for the Web-Graph</em>, edited by Anthony Bonato and Fan R. K. Chung, 138–49. Lecture Notes in Computer Science. Berlin, Heidelberg: Springer. <a href="https://doi.org/10.1007/978-3-540-77004-6_11">https://doi.org/10.1007/978-3-540-77004-6_11</a>.
+            </div>
+            <div id="ref-Zhu2006AutDim" class="csl-entry" role="doc-biblioentry">
+            Zhu, Mu, and Ali Ghodsi. 2006. <span>“Automatic Dimensionality Selection from the Scree Plot via the Use of Profile Likelihood.”</span> <em>Computational Statistics &amp; Data Analysis</em> 51 (2): 918–30. <a href="https://doi.org/10.1016/j.csda.2005.09.010">https://doi.org/10.1016/j.csda.2005.09.010</a>.
+            </div>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <div class="container">
+            <h2>Affiliations</h2> 
+            <sup>1</sup>&nbsp;Université de Montréal; <sup>2</sup>&nbsp;Québec Centre for Biodiversity Sciences
+            <br />
+            <sup>‡</sup>&nbsp;These authors contributed equally to the work
+        </div>
+    </footer>
+    
+</body>
+</html>
